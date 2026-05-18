@@ -42,7 +42,7 @@ router.get('/export', async (req, res, next) => {
         { email: { $regex: q, $options: 'i' } }
       ];
     }
-    const sortBy = (req.query.sort as string) === 'oldest' ? { createdAt: 1 } : { createdAt: -1 };
+    const sortBy = (req.query.sort as string) === 'oldest' ? { createdAt: 1 } as const : { createdAt: -1 } as const;
     const data = await Lead.find(filters).sort(sortBy);
 
     // Build CSV
@@ -88,7 +88,7 @@ router.get('/', async (req, res, next) => {
       ];
     }
 
-    const sortBy = (req.query.sort as string) === 'oldest' ? { createdAt: 1 } : { createdAt: -1 };
+    const sortBy = (req.query.sort as string) === 'oldest' ? { createdAt: 1 } as const : { createdAt: -1 } as const;
 
     const [data, total] = await Promise.all([
       Lead.find(filters).sort(sortBy).skip(skip).limit(limit),
@@ -123,7 +123,7 @@ router.put('/:id',
       const errors = validationResult(req);
       if (!errors.isEmpty()) return fail(res, 400, { validation: errors.array() });
       const { name, email, status, source } = req.body;
-      const lead = await Lead.findByIdAndUpdate(req.params.id, { name, email, status, source }, { new: true });
+      const lead = await Lead.findByIdAndUpdate(req.params!.id, { name, email, status, source }, { new: true });
       if (!lead) return fail(res, 404, 'Not found');
       return ok(res, lead);
     } catch (err) {
