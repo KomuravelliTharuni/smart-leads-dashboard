@@ -1,0 +1,9 @@
+FROM node:18-alpine
+WORKDIR /app
+COPY client/package.json client/tsconfig.json client/postcss.config.cjs client/tailwind.config.cjs ./
+COPY client/src ./src
+COPY client/index.html ./
+COPY client/vite.config.ts ./
+RUN npm install
+EXPOSE 5173
+CMD ["npm", "run", "dev"]
